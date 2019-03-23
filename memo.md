@@ -28,6 +28,10 @@ kubectl create service loadbalancer \
     --tcp 80:80 myapp
 
 kubectl get service myapp
+
+# delete
+kubectl delete pod --all
+kubectl delete service myapp
 ```
 
 EXTERNAL-IP にアクセスすると `nginx` が起動している。
@@ -179,4 +183,19 @@ kubectl delete pod sample-statefulset-0
 kubectl exec sample-statefulset-0 -- ls /usr/share/nginx/html/sample.html
 ```
 
+## p145
 
+コンテナ間通信
+`Service` リソース
+
+`type: ClusterIP` を用いて異なる `Pod` 間でも仮想的なローカル通信が可能(p147の in-cluster IP のイメージ)。 `get pod -o wide` でIPを確認できる。
+
+ロードバランシングの体験
+```sh
+for PODNAME in `kubectl get pods -l app=sample-app -o jsonpath='{.items[*].metadata.name}'`; do
+    kubectl exec -it ${PODNAME} -- cp /etc/hostname /usr/share/nginx/html/index.html;
+done
+
+# run --rm で一時的なテスト Pod を作成、ローカルでリクエストを送る。
+kubectl run --image=centos:6 --restart=Never --rm -i testpod -- curl -s http://10.xx.xx.xx:8080
+```
