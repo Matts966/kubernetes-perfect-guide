@@ -133,7 +133,7 @@ kubectl describe rs sample-rs
 
 kubectl では以下
 ```sh
-scale rs sample-rs --replicas 5
+kubectl scale rs sample-rs --replicas 5
 ```
 
 ## p102
@@ -147,4 +147,36 @@ scale rs sample-rs --replicas 5
 
 `spec.strategy` 属性などでアップデートの方法を指定可能。
 デフォルトは25％ずつのローリングアップデート。
+
+## p113
+
+`DaemonSet`
+
+## p116
+
+`StatefulSet` は永続化に使う。 `volume` 系の属性を指定することが多い点で他のリソースと異なる。
+
+```sh
+# statefulset作成。デフォルトで一つ一つ作成。
+kubectl apply -f sample-statefulset.yaml
+
+# ディスクの空き状況確認
+kubectl exec sample-statefulset-0 df
+
+# ファイルがないことを確認。
+kubectl exec sample-statefulset-0 -- ls /usr/share/nginx/html/sample.html
+
+# ファイルを作成
+kubectl exec sample-statefulset-0 -- touch /usr/share/nginx/html/sample.html
+
+# ファイルがあることを確認。
+kubectl exec sample-statefulset-0 -- ls /usr/share/nginx/html/sample.html
+
+# delete
+kubectl delete pod sample-statefulset-0
+
+# ファイルがまだあることを確認。
+kubectl exec sample-statefulset-0 -- ls /usr/share/nginx/html/sample.html
+```
+
 
