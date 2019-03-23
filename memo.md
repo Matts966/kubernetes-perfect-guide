@@ -82,6 +82,7 @@ source <(kubectl completion zsh)
 ```
 
 `kubectl apply` は `create` と異なり、すでにファイルがある場合などは更新できる。履歴も残るので良い。
+`-f` でファイル指定が可能。
 
 ## p62
 ラベルについて。システムが使う場合もあるしアプリケーションで使うこともできる。 `metadata.labels` で定義できる。
@@ -125,3 +126,13 @@ kubectl では以下
 ```sh
 scale rs sample-rs --replicas 5
 ```
+
+## p102
+`Deployment` は `kind` だけ変えれば構造は `ReplicaSet` と同じ。
+
+`kubectl get pod --watch` で見ながら、 `sample-deployment.yaml` に変更を加え、 `kubectl apply -f sample-deployment.yaml` でローリングアップデートし、過程を観察できる。
+
+もとのファイルに戻して `kubectl apply -f sample-deployment.yaml` すると、新しい `ReplicaSet` は作られず、ロールバックされる。 `template` 以下のハッシュ値が変更されない限り以前の `ReplicaSet` が使われる。
+
+
+
