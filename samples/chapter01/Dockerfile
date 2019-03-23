@@ -15,3 +15,4 @@ USER nobody
 
 # コンテナ起動時に実行するコマンドを定義
 ENTRYPOINT ["./go-app"]
+o
