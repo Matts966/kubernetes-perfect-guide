@@ -110,6 +110,9 @@ kubectl exec -it sample-pod -- /bin/sh -c "ls | grep root"
 `Pod` ： 平たくいうとコンテナ。複数コンテナを束ねるパターンがいくつかある。
 `ReplicaSet` ： 数を死守したいときに使うリソース。
 `Deployment` ： デプロイなどの際に使う。基本80％これを使う。
+
+`Deployment` → `ReplicaSet` → `Pod` という関係で管理されている。 p85 に図がある。
+
 他にも `Workloads` リソースはたくさんある。
 
 `chapter05` に諸々ファイルがある。
