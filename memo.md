@@ -88,3 +88,40 @@ source <(kubectl completion zsh)
 
 
 
+## p74
+`docker exec` 的なの
+```sh 
+kubectl exec -it sample-pod /bin/sh
+# 引数ありの場合 -- をつける
+kubectl exec -it sample-pod -- /bin/ls -l /
+# パイプなど特殊文字を使う場合は sh に文字列で渡す。
+kubectl exec -it sample-pod -- /bin/sh -c "ls | grep root"
+```
+なんでもできてしまう上、IaS的には他の方法を取るべきなので、あまり使うべきでない。
+
+`kubectl` のコマンドは多いが、使うべきでないものが多い。
+プロセスが起動しない時など、デバッグでは `describe` `logs` をよく使う。
+
+## p85
+`Pod` とは、デザインパターンは？など。
+
+`chapter05` に諸々ファイルがある。
+
+`kind: ReplicaSet` による冗長化。 `template:` 以下にもとの設定をインデントして写せば良い。 
+
+```sh
+# 試しに削除してみるとセルフヒーリングで復活する。
+kubectl delete pod ~
+# モニタリング
+kubectl describe rs sample-rs
+```
+
+## p99
+`ReplicaSet` でのラベルはシステムで用いるので、一致している必要がある。
+
+スケールする場合、マニフェスト( `yml` )を更新するか、動的にAPIを叩く運用も行う可能性がある。
+
+kubectl では以下
+```sh
+scale rs sample-rs --replicas 5
+```
