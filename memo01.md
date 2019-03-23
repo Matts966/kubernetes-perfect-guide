@@ -239,3 +239,32 @@ MBP% kubectl exec -it sample-env /bin/sh
 # echo $MAX_CONNECTION
 # -> 100
 ```
+
+`spec.Nodename` などで他の属性を環境変数に渡すなども可能。
+
+`secret` サービスをあらかじめデプロイすることでそれらを環境変数に渡すこともできる。 envファイル的な存在。平文で書けないので `Base64` になっている(暗号化ではない)。
+
+```sh
+kubectl apply -f sample-db-auth.yaml
+kubectl apply -f sample-secret-single-env.yaml
+kubectl exec -it sample-secret-single-env env | grep DB_USERNAME
+# -> DB_USERNAME=root
+```
+以下のような形で指定している。
+```yaml
+env:
+    - name: DB_USERNAME
+        valueFrom:
+        secretKeyRef:
+            name: sample-db-auth
+            key: username
+```
+
+## p209
+`Secret` は Volume として渡したり、全部渡したりも可能。
+
+## p213
+KubeSec を用いた暗号化
+
+## p217
+Openな設定などは `ConfigMap` リソースを使う。
