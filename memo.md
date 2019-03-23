@@ -143,7 +143,7 @@ kubectl scale rs sample-rs --replicas 5
 ## p102
 `Deployment` は `kind` だけ変えればymlの構造は `ReplicaSet` と同じ。
 
-`kubectl get pod --watch` で見ながら、 `sample-deployment.yaml` に変更を加え、 `kubectl apply -f sample-deployment.yaml` でローリングアップデートし、過程を観察できる。
+`kubectl get pod L` で見ながら、 `sample-deployment.yaml` に変更を加え、 `kubectl apply -f sample-deployment.yaml` でローリングアップデートし、過程を観察できる。
 
 もとのファイルに戻して `kubectl apply -f sample-deployment.yaml` すると、新しい `ReplicaSet` は作られず、ロールバックされる。 `template` 以下のハッシュ値が変更されない限り以前の `ReplicaSet` が使われる。
 
@@ -183,19 +183,59 @@ kubectl delete pod sample-statefulset-0
 kubectl exec sample-statefulset-0 -- ls /usr/share/nginx/html/sample.html
 ```
 
-## p145
+## p145 Chapter6
 
 コンテナ間通信
+
 `Service` リソース
 
 `type: ClusterIP` を用いて異なる `Pod` 間でも仮想的なローカル通信が可能(p147の in-cluster IP のイメージ)。 `get pod -o wide` でIPを確認できる。
 
 ロードバランシングの体験
 ```sh
+kubectl apply -f sample-deployment.yaml
+kubectl apply -f sample-clusterip.yaml
+
 for PODNAME in `kubectl get pods -l app=sample-app -o jsonpath='{.items[*].metadata.name}'`; do
     kubectl exec -it ${PODNAME} -- cp /etc/hostname /usr/share/nginx/html/index.html;
 done
 
 # run --rm で一時的なテスト Pod を作成、ローカルでリクエストを送る。
 kubectl run --image=centos:6 --restart=Never --rm -i testpod -- curl -s http://10.xx.xx.xx:8080
+
+# 以下のように clusterip の name での指定も可能
+kubectl run --image=centos:6 --restart=Never --rm -i testpod -- curl -s http://sample-clusterip:8080
+```
+
+## p174
+
+ローカルではなくExternalのロードバランシングには `LoadBalancer Service` を用いる（クラウド以外ではデフォルトでは動かない）。アクセス制御も可能。
+
+ただし、ローカルで済む場合はその方がレイテンシが少なく、セキュリティ的にも資金的にも(一つでも月三千円ほど)良いので `clusterip` を使う。
+ 
+```sh
+kubectl apply -f sample-deployment.yaml
+kubectl apply -f sample-lb.yaml
+
+for PODNAME in `kubectl get pods -l app=sample-app -o jsonpath='{.items[*].metadata.name}'`; do
+    kubectl exec -it ${PODNAME} -- cp /etc/hostname /usr/share/nginx/html/index.html;
+done
+
+# 以下のように lb の name での指定も可能
+# この場合ローカルIPとなっている。
+# レイテンシは低い。
+kubectl run --image=centos:6 --restart=Never --rm -i testpod -- curl -s http://sample-lb:8080
+```
+
+`Service` には他にも `Ingress` というL4（HTTP）レイヤのロードバランサーもある（LBはL7）。
+
+## Chapter7
+
+環境変数をymlに指定できる。
+
+```sh
+kubectl apply -f sample-env.yaml
+MBP% kubectl exec -it sample-env /bin/sh
+# echo $MAX_CONNECTION
+# -> 100
 ```
