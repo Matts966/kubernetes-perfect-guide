@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: wp-db-stateful
+spec:
+  serviceName: wp-db-stateful
+  replicas: 1
+  selector:
+    matchLabels:
+      app: wordpress
+  template:
+    metadata:
+      labels:
+        app: wordpress
+    spec:
+      containers:
+        - name: mysql
+          image: mysql:5.7
+          envFrom:
+            - configMapRef:
+                name: wp-configmap
+            - secretRef:
+                name: wp-db-auth
+          volumeMounts:
+            - mountPath: "/var/lib/mysql"
+              name: mysql-vol
+      volumes:
+        - name: mysql-vol
+          persistentVolumeClaim:
+            claimName: mysql-pvc
+      initContainers:
+        - name: alpine
+          image: alpine
+          command: ["rm", "-rf", "/data/lost+found"]
+          volumeMounts:
+            - name: data-volume
+              mountPath: /data
