@@ -104,7 +104,13 @@ kubectl exec -it sample-pod -- /bin/sh -c "ls | grep root"
 プロセスが起動しない時など、デバッグでは `describe` `logs` をよく使う。
 
 ## p85
-`Pod` とは、デザインパターンは？など。
+`Pod` とは？、デザインパターンは？など。
+
+### `Workloads` リソース
+`Pod` ： 平たくいうとコンテナ。複数コンテナを束ねるパターンがいくつかある。
+`ReplicaSet` ： 数を死守したいときに使うリソース。
+`Deployment` ： デプロイなどの際に使う。基本80％これを使う。
+他にも `Workloads` リソースはたくさんある。
 
 `chapter05` に諸々ファイルがある。
 
@@ -128,11 +134,14 @@ scale rs sample-rs --replicas 5
 ```
 
 ## p102
-`Deployment` は `kind` だけ変えれば構造は `ReplicaSet` と同じ。
+`Deployment` は `kind` だけ変えればymlの構造は `ReplicaSet` と同じ。
 
 `kubectl get pod --watch` で見ながら、 `sample-deployment.yaml` に変更を加え、 `kubectl apply -f sample-deployment.yaml` でローリングアップデートし、過程を観察できる。
 
 もとのファイルに戻して `kubectl apply -f sample-deployment.yaml` すると、新しい `ReplicaSet` は作られず、ロールバックされる。 `template` 以下のハッシュ値が変更されない限り以前の `ReplicaSet` が使われる。
 
+`kubectl` コマンドでロールバックも可能だが、履歴が追いづらいのでマニフェストを更新するのが良い。
 
+`spec.strategy` 属性などでアップデートの方法を指定可能。
+デフォルトは25％ずつのローリングアップデート。
 
