@@ -131,6 +131,9 @@ Pod の安全な delete.
 SIGTERM の2秒後SIGKILLでの強制終了が発生は固定、 `terminationGracePeriod` は設定可能。
 
 ## p298
+cordon とは
+![cordon](cordon.png)
+
 ```sh
 # Nodeをスケジューリング対象から除外
 kubectl cordon {node-name}
