@@ -208,3 +208,6 @@ kubectl exec -it tick-app-95f8548c5-7k9vc -- cat /logs/tick.log
 # fluentd の stdout を見る。複数コンテナの場合 `-c` オプションが必要。
 kubectl logs tick-app-95f8548c5-4s6z9 -c fluentd
 ```
+
+## [helm](https://helm.sh/)
+`yaml` のテンプレート化による再利用。
