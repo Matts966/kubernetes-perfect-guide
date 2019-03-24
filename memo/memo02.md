@@ -211,3 +211,4 @@ kubectl logs tick-app-95f8548c5-4s6z9 -c fluentd
 
 ## [helm](https://helm.sh/)
 `yaml` のテンプレート化による再利用。
+[`chart`](https://hub.helm.sh/) から引っ張ってこれる。
