@@ -1,0 +1,27 @@
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: output-date
+spec:
+  schedule: "*/1 * * * *"
+  concurrencyPolicy: Allow
+  startingDeadlineSeconds: 30
+  successfulJobsHistoryLimit: 5
+  failedJobsHistoryLimit: 3
+  suspend: false
+  jobTemplate:
+    spec:
+      completions: 1
+      parallelism: 1
+      backoffLimit: 1
+      template:
+        spec:
+          containers:
+          - name: output-date
+            image: alpine:latest
+            command:
+            - "sh"
+            - "-c"
+            args:
+            - "date"
+          restartPolicy: Never

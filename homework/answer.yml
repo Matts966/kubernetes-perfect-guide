@@ -1,5 +1,5 @@
 ---
-# versin はリファランスを参考に、APIごとに決める。
+# version はリファランスを参考に、APIごとに決める。
 apiVersion: v1
 kind: ConfigMap
 metadata:
