@@ -74,3 +74,33 @@ sample-ingress-default
 curl https://${INGRESS_IP}/path1/index.html -H "Host: sample.example.com" --insecure
 sample-ingress-apps-1
 ```
+
+## p258
+Resource の制限とオートスケーリング
+`resources.requests`, ``resources.limits` を用いて、CPU, Memory の上限と下限を設定できる。差を広げると、割り当て後負荷が大きくなりすぎてしまう可能性があるので、2倍程度に抑える。
+
+## p262
+Cluster Autoscaler ： スケジューリングが厳しくなった時に `Node` を追加する仕組み。
+こちらの機能も `resources.requests` をうまく設定することで、適切なタイミングでスケーリングすることができる。
+
+`resources.requests` がないと異常な数の `Pod` が詰められてしまうので、設定がない場合はデフォルト値が適用される。
+
+## p273
+Horizontal Pod Autoscaler ： `Deployment` リソースの `replica` を自動でスケールさせるためのリソース。
+`chapter09/sample-hpa.yaml`
+
+Vertical Pod Autoscaler ： CPU のリソース割り当てによるスケーリング。
+
+## p276 
+リソース管理とオートスケーリングのまとめ
+
+## p278
+コンテナのヘルスチェック
+Liveness Probe: 正常に動作しているか、していなければ再起動。
+メモリリークで死んだ場合など
+`chapter10/sample-liveness.yaml`
+
+Readiness Probe: サービスイン可能か、可能でなければトラフィックは流さない。
+接続が一時的に死んだ場合など
+`chapter10/sample-readiness.yaml`
+
