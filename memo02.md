@@ -168,4 +168,18 @@ and, or や優先、必須、ラベルだけでなくリソースの大小の条
 ## p341
 Affinity や NodeSelector のスケジューリングのまとめ
 
+コンテナのローカルで疎通確認などを行いたい場合は以下のようにする。
+```sh
+kubectl exec -it pod-name bash
+apt-get updata
+apt-get install curl
+curl 127.0.0.1
+```
 
+課題8
+```sh
+# ログを見る
+kubectl exec -it tick-app-95f8548c5-7k9vc -- cat /logs/tick.log
+# fluentd の stdout を見る。
+kubectl logs tick-app-95f8548c5-4s6z9 -c fluentd
+```
