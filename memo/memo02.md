@@ -132,6 +132,7 @@ SIGTERM の2秒後SIGKILLでの強制終了が発生は固定、 `terminationGra
 
 ## p298
 cordon とは
+
 ![cordon](cordon.png)
 
 ```sh
