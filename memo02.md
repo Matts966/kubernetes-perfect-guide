@@ -173,6 +173,13 @@ Affinity や NodeSelector のスケジューリングのまとめ
 kubectl logs output-date-1553416500-754qx
 ```
 
+```sh
+# READINESS や STATUS をみる。
+kubectl get pod -w
+# 404 などの確認
+kubectl get event
+```
+
 コンテナのローカルで疎通確認などを行いたい場合は以下のようにする。
 ```sh
 kubectl exec -it pod-name bash
@@ -185,6 +192,6 @@ curl 127.0.0.1
 ```sh
 # ログを見る
 kubectl exec -it tick-app-95f8548c5-7k9vc -- cat /logs/tick.log
-# fluentd の stdout を見る。
+# fluentd の stdout を見る。複数コンテナの場合 `-c` オプションが必要。
 kubectl logs tick-app-95f8548c5-4s6z9 -c fluentd
 ```
