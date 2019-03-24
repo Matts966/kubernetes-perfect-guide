@@ -192,6 +192,9 @@ curl 127.0.0.1
 
 ## 課題7
 ```sh
+# base64 を使う時など、使い捨ての linux が欲しい時
+kubectl run -it --rm --restart=Never --image=alpine ash
+
 # configmap, secret も確認できる。
 kubectl describe configmap exam-cm
 kubectl describe secret exam-secret
