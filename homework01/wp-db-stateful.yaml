@@ -4,7 +4,7 @@ metadata:
   name: wp-db-stateful
 spec:
   serviceName: wp-db-stateful
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: wordpress
@@ -16,22 +16,31 @@ spec:
       containers:
         - name: mysql
           image: mysql:5.7
+          args:
+            - "--ignore-db-dir=lost+found"
           envFrom:
             - configMapRef:
                 name: wp-configmap
             - secretRef:
                 name: wp-db-auth
+          ports:
+            - containerPort: 3306
           volumeMounts:
-            - mountPath: "/var/lib/mysql"
-              name: mysql-vol
-      volumes:
-        - name: mysql-vol
-          persistentVolumeClaim:
-            claimName: mysql-pvc
-      initContainers:
-        - name: alpine
-          image: alpine
-          command: ["rm", "-rf", "/data/lost+found"]
-          volumeMounts:
-            - name: data-volume
-              mountPath: /data
+          - name: mysql-vol
+            mountPath: /var/lib/mysql
+      # initContainers:
+      #   - name: alpine
+      #     image: alpine
+      #     command: ["rm", "-rf", "/data/lost+found"]
+      #     volumeMounts:
+      #       - name: data-volume
+      #         mountPath: /data
+  volumeClaimTemplates:
+  - metadata:
+      name: mysql-vol
+    spec:
+      accessModes:
+      - ReadWriteOnce
+      resources:
+        requests:
+          storage: 10Gi
