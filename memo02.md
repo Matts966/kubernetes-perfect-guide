@@ -168,11 +168,13 @@ and, or や優先、必須、ラベルだけでなくリソースの大小の条
 ## p341
 Affinity や NodeSelector のスケジューリングのまとめ
 
+## 課題4
 ```sh
 # cron のログも見れる。
 kubectl logs output-date-1553416500-754qx
 ```
 
+## 課題6
 ```sh
 # READINESS や STATUS をみる。
 kubectl get pod -w
@@ -188,7 +190,14 @@ apt-get install curl
 curl 127.0.0.1
 ```
 
-課題8
+## 課題7
+```sh
+# configmap, secret も確認できる。
+kubectl describe configmap exam-cm
+kubectl describe secret exam-secret
+```
+
+## 課題8
 ```sh
 # ログを見る
 kubectl exec -it tick-app-95f8548c5-7k9vc -- cat /logs/tick.log
