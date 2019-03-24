@@ -1,12 +1,15 @@
+# versin はリファランスを参考に、APIごとに決める。
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: wp-configmap
+  name: wordpress
 data:
-  WORDPRESS_DB_HOST: wp-clusterip
-  MYSQL_DATABASE: d29yZHByZXNzCg==
-  MYSQL_USER: d29yZHByZXNzCg==
-  MYSQL_PASSWORD: d29yZHByZXNzCg==
-  MYSQL_RANDOM_ROOT_PASSWORD: "yes"
-  WORDPRESS_DB_USER: d29yZHByZXNzCg==
-  WORDPRESS_DB_PASSWORD: d29yZHByZXNzCg==
+  # ClusterIP のサービス名でいい。
+  # スキームはつけない。そもそも http に乗ってない
+  # TCP でやっている。
+  # docker イメージを見に行って sh ファイルを追うと
+  # 変数の定義などはわかる。
+  db_host: mysql
+  db_user: wordpress
+  db_name: wordpress
+  root_random_pass: "yes"

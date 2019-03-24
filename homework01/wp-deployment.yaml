@@ -1,9 +1,9 @@
+# replicas を増やしても別環境が複製されるだけなので注意。
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: wp-deployment
+  name: wordpress
 spec:
-  replicas: 1
   selector:
     matchLabels:
       app: wordpress
@@ -13,12 +13,23 @@ spec:
         app: wordpress
     spec:
       containers:
-        - name: wordpress
-          image: wordpress
-          ports:
-            - containerPort: 80
-          envFrom:
-            - configMapRef:
-                name: wp-configmap
-            - secretRef:
-                name: wp-db-auth
+      - name: wordpress
+        image: wordpress
+        env:
+        - name: WORDPRESS_DB_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: wordpress
+              key: db_host
+        - name: WORDPRESS_DB_USER
+          valueFrom:
+            configMapKeyRef:
+              name: wordpress
+              key: db_user
+        - name: WORDPRESS_DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: wordpress
+              key: db_pass
+        ports:
+        - containerPort: 80

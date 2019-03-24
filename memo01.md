@@ -227,7 +227,7 @@ done
 kubectl run --image=centos:6 --restart=Never --rm -i testpod -- curl -s http://sample-lb:8080
 ```
 
-`Service` には他にも `Ingress` というL4（HTTP）レイヤのロードバランサーもある（LBはL7）。
+`Service` には他にも `Ingress` というL7（HTTP）レイヤのロードバランサーもある（LBはL4）。
 
 ## Chapter7
 
