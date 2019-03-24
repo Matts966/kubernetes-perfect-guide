@@ -201,6 +201,7 @@ kubectl describe secret exam-secret
 ```
 
 ## 課題8
+サイドカーパターンになっている。
 ```sh
 # ログを見る
 kubectl exec -it tick-app-95f8548c5-7k9vc -- cat /logs/tick.log

@@ -19,6 +19,7 @@ SIZE 382MB → 10.8MB
 .kube/config に設定ファイルを置いて `kubectl` する。GKEノードは用意してもらえた。
 
 ```sh
+# ymlマニフェストなしでコマンドを使ってクラスタを編成してみる。
 kubectl run myapp \
     --image=nginx:1.12 \
     --replicas 3 \
@@ -34,7 +35,7 @@ kubectl delete pod --all
 kubectl delete service myapp
 ```
 
-EXTERNAL-IP にアクセスすると `nginx` が起動している。
+`kubectl get service` でみれるEXTERNAL-IP にアクセスすると `nginx` が起動している。
 
 ## p25
 ローカルでやる場合 `minikube`, もあるが、 Docker for mac でやるのが簡単。
@@ -154,6 +155,7 @@ kubectl scale rs sample-rs --replicas 5
 
 ## p113
 
+すべての `Node` に `Pod` をひとつずつ配置する。
 `DaemonSet`
 
 ## p116
