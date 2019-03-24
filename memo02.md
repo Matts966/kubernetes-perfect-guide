@@ -168,6 +168,11 @@ and, or や優先、必須、ラベルだけでなくリソースの大小の条
 ## p341
 Affinity や NodeSelector のスケジューリングのまとめ
 
+```sh
+# cron のログも見れる。
+kubectl logs output-date-1553416500-754qx
+```
+
 コンテナのローカルで疎通確認などを行いたい場合は以下のようにする。
 ```sh
 kubectl exec -it pod-name bash
