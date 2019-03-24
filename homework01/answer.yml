@@ -1,0 +1,146 @@
+---
+# versin はリファランスを参考に、APIごとに決める。
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: wordpress
+data:
+  # ClusterIP のサービス名でいい。
+  # スキームはつけない。そもそも http に乗ってない
+  # TCP でやっている。
+  # docker イメージを見に行って sh ファイルを追うと
+  # 変数の定義などはわかる。
+  db_host: mysql
+  db_user: wordpress
+  db_name: wordpress
+  root_random_pass: "yes"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: wordpress
+type: Opaque
+# base64にしなくてもいいように stringData を使う。
+stringData:
+  db_pass: wordpress
+---
+# replicas を増やしても別環境が複製されるだけなので注意。
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wordpress
+spec:
+  selector:
+    matchLabels:
+      app: wordpress
+  template:
+    metadata:
+      labels:
+        app: wordpress
+    spec:
+      containers:
+      - name: wordpress
+        image: wordpress
+        env:
+        - name: WORDPRESS_DB_HOST
+          valueFrom:
+            configMapKeyRef:
+              name: wordpress
+              key: db_host
+        - name: WORDPRESS_DB_USER
+          valueFrom:
+            configMapKeyRef:
+              name: wordpress
+              key: db_user
+        - name: WORDPRESS_DB_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: wordpress
+              key: db_pass
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: wordpress
+spec:
+  selector:
+    app: wordpress
+  ports:
+  - port: 80
+  type: LoadBalancer
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: mysql
+spec:
+  selector:
+    matchLabels:
+      app: mysql
+  template:
+    metadata:
+      labels:
+        app: mysql
+    spec:
+      initContainers:
+      # args:
+      #   - "--ignore-db-dir=lost+found"
+      # をcontainersに渡す方が良さそう
+      - name: alpine
+        image: alpine
+        command: ["rm", "-rf", "/data/lost+found"]
+        volumeMounts:
+        - name: data-volume
+          mountPath: /data
+      containers:
+      - name: mysql
+        image: mysql:5.7
+        env:
+        - name: MYSQL_DATABASE
+          valueFrom:
+            configMapKeyRef:
+              name: wordpress
+              key: db_name
+        - name: MYSQL_USER
+          valueFrom:
+            configMapKeyRef:
+              name: wordpress
+              key: db_user
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: wordpress
+              key: db_pass
+        - name: MYSQL_RANDOM_ROOT_PASSWORD
+          valueFrom:
+            configMapKeyRef:
+              name: wordpress
+              key: root_random_pass
+        ports:
+        - containerPort: 3306
+        volumeMounts:
+        - name: data-volume
+          mountPath: /var/lib/mysql
+  serviceName: mysql
+  volumeClaimTemplates:
+  - metadata:
+      name: data-volume
+    spec:
+      accessModes: [ "ReadWriteOnce" ]
+      resources:
+        requests:
+          storage: 10Gi
+
+---
+# type を省略すると ClusterIP になる。
+apiVersion: v1
+kind: Service
+metadata:
+  name: mysql
+spec:
+  selector:
+    app: mysql
+  ports:
+  - port: 3306

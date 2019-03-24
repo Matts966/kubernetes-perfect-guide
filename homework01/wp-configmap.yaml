@@ -3,7 +3,7 @@ kind: ConfigMap
 metadata:
   name: wp-configmap
 data:
-  WORDPRESS_DB_HOST: http://wp-clusterip:3306
+  WORDPRESS_DB_HOST: wp-clusterip
   MYSQL_DATABASE: d29yZHByZXNzCg==
   MYSQL_USER: d29yZHByZXNzCg==
   MYSQL_PASSWORD: d29yZHByZXNzCg==
