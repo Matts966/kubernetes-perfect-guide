@@ -213,6 +213,36 @@ kubectl exec -it tick-app-95f8548c5-7k9vc -- cat /logs/tick.log
 kubectl logs tick-app-95f8548c5-4s6z9 -c fluentd
 ```
 
+## すべてのサービスを消す
+
+```sh
+kubectl delete all --all 
+```
+`kubernetes` というデフォルトのサービスも消えてしまうが、復活する。
+
 ## [helm](https://helm.sh/)
 `yaml` のテンプレート化による再利用。
 [`chart`](https://hub.helm.sh/) から引っ張ってこれる。
+
+そもそも以下のようにすれば、簡単なマニフェストは書く必要もない。
+```sh
+MBP% kubectl create service loadbalancer sample-lb --dry-run --tcp 8080 -o yaml
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  labels:
+    app: sample-lb
+  name: sample-lb
+spec:
+  ports:
+  - name: "8080"
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: sample-lb
+  type: LoadBalancer
+status:
+  loadBalancer: {}
+```
