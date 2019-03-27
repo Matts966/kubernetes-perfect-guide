@@ -1,3 +1,3 @@
-for path in ~/kubernetes-perfect-guide/homework01/wp*; do
+for path in ~/kubernetes-perfect-guide/homework/wp*; do
     kubectl apply -f $path
 done
